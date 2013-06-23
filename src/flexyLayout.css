@@ -1,0 +1,46 @@
+.flexy-layout{
+    display: inline-block;
+    width: 100%;
+    height: 300px;
+    background-color: lightskyblue;
+    overflow: hidden;
+}
+
+.flexy-layout > .block{
+    display: inline-block;
+    height: 100%;
+    float: left;
+    overflow: hidden;
+
+   /* padding: 5px;*/
+    /*border:2px solid #000000;*/
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    transform:translateZ(0);
+    -moz-transform:translateZ(0);
+    transition: width 0.8s ease-in-out ;
+    -moz-transition: width 0.8s ease-in-out ;
+    -webkit-transition: width 0.8s ease-in-out;
+}
+
+
+.block-content{
+    display: inline-block;
+    padding: 5px;
+    width: 100%;
+    height: 80%;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+
+}
+
+.block-content div{
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background: lightgreen;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    overflow: hidden;
+}
+
