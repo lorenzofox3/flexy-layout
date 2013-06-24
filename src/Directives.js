@@ -30,7 +30,7 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                     '<div class="block-content" ng-transclude>' +
                     '</div>' +
                     '<input ng-model="value" type="number"/>' +
-                    '<input type="checkbox" ng-model="block.isLocked"/>'+
+                    '<input type="checkbox" ng-model="block.isLocked"/>' +
                     '</div>',
                 link: function (scope, element, attrs, ctrl) {
                     scope.block = Block.getNewBlock();
@@ -39,15 +39,28 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                     });
 
                     ctrl.addBlock(scope.block);
-                scope.value=0;
-                var input=angular.element(element.children()[1]);
-                input.bind('blur', function () {
-                    scope.$apply(function () {
-                        ctrl.moveBlockLength(scope.block,scope.value);
-                        scope.value=0;
-                    });
-                })
+                    scope.value = 0;
+                    var input = angular.element(element.children()[1]);
+                    input.bind('blur', function () {
+                        scope.$apply(function () {
+                            ctrl.moveBlockLength(scope.block, scope.value);
+                            scope.value = 0;
+                        });
+                    })
 
+                }
+            };
+        }])
+        .directive('blockSplitter', ['Block', function (Block) {
+            return{
+                restrict: 'E',
+                require: '^flexyLayout',
+                replace: true,
+                scope: {},
+                template: '<div class="block splitter"></div>',
+                link: function (scope, element, attrs, ctrl) {
+                    scope.splitter = Block.getNewSplitter();
+                    ctrl.addBlock(scope.splitter);
                 }
             };
         }]);

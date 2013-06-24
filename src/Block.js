@@ -74,10 +74,7 @@
             };
 
             Block.prototype.canMoveLength = function (length) {
-                if(this.isLocked === true || (length < 0 && (this.lengthValue - this.minLength) === 0)){
-                    return false;
-                }
-                return true;
+                return !(this.isLocked === true || (length < 0 && (this.lengthValue - this.minLength) === 0));
             };
 
 
