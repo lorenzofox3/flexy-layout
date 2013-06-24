@@ -8,7 +8,7 @@
 
                 if (angular.isArray(composingBlocks)) {
                     for (var i = 0, l = composingBlocks.length; i < l; i++) {
-                        if (composingBlocks[i].moveLength && composingBlocks[i].isBlockLocked) {
+                        if (composingBlocks[i].moveLength && composingBlocks[i].canMoveLength) {
                             this.blocks.push(composingBlocks[i]);
                         }
                     }
@@ -23,7 +23,7 @@
                     blockLength;
 
                 for (var i = 0, l = this.blocks.length; i < l; i++) {
-                    if (this.blocks[i].isBlockLocked() !== true) {
+                    if (this.blocks[i].canMoveLength(length) === true) {
                         divider++;
                     }
                 }
@@ -39,15 +39,15 @@
                 return initialLength - length;
             };
 
-            CompositeBlock.prototype.isBlockLocked = function () {
+            CompositeBlock.prototype.canMoveLength = function (length) {
 
                 for (var i = 0, l = this.blocks.length; i < l; i++) {
-                    if (this.blocks[i].isLocked !== true) {
-                        return false
+                    if (this.blocks[i].canMoveLength(length) === true) {
+                        return true;
                     }
                 }
 
-                return true;
+                return false;
             };
 
             CompositeBlock.prototype.clean = function () {
@@ -73,8 +73,11 @@
                 return this.lengthValue - oldLength;
             };
 
-            Block.prototype.isBlockLocked = function () {
-                return this.isLocked;
+            Block.prototype.canMoveLength = function (length) {
+                if(this.isLocked === true || (length < 0 && (this.lengthValue - this.minLength) === 0)){
+                    return false;
+                }
+                return true;
             };
 
 
@@ -82,8 +85,8 @@
                 this.lengthValue = 5;
             }
 
-            Splitter.prototype.isBlockLocked = function () {
-                return true;
+            Splitter.prototype.canMoveLength = function (length) {
+                return false;
             };
 
             Splitter.prototype.moveLength = function () {

@@ -14,7 +14,7 @@
                         blocks.push(block);
                         block.moveLength(element[0].offsetWidth);
                     } else {
-                        length = blocks.length < 1 ? element[0].offsetWidth : 200;
+                        length = 200;
                         blocks.push(block);
                         this.moveBlockLength(block, length);
                     }
@@ -29,14 +29,14 @@
                     composite,
                     availableLength;
 
-                if (blockIndex === -1 || length === 0 || block.isLocked===true) {
+                if (blockIndex === -1 || length === 0 || block.canMoveLength(length)!==true) {
                     return;
                 }
 
                 composingBlocks = (blocks.slice(0, blockIndex)).concat(blocks.slice(blockIndex + 1, blocks.length));
                 composite = Block.getNewComposite(composingBlocks);
 
-                if(composite.isBlockLocked()===true){
+                if(composite.canMoveLength(-length)!==true){
                     return;
                 }
 
