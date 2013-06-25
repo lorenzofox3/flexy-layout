@@ -31,6 +31,7 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                     '</div>' +
                     '<input ng-model="value" type="number"/>' +
                     '<input type="checkbox" ng-model="block.isLocked"/>' +
+                    '<span>{{block.lengthValue}}</span>' +
                     '</div>',
                 link: function (scope, element, attrs, ctrl) {
                     scope.block = Block.getNewBlock();
@@ -46,8 +47,7 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                             ctrl.moveBlockLength(scope.block, scope.value);
                             scope.value = 0;
                         });
-                    })
-
+                    });
                 }
             };
         }])
@@ -57,10 +57,17 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                 require: '^flexyLayout',
                 replace: true,
                 scope: {},
-                template: '<div class="block splitter"></div>',
+                template: '<div class="block splitter">' +
+                    '<div class="ghost" ng-click="getRange()"></div>' +
+                    '</div>',
                 link: function (scope, element, attrs, ctrl) {
                     scope.splitter = Block.getNewSplitter();
                     ctrl.addBlock(scope.splitter);
+
+                    scope.getRange = function () {
+                        console.log(ctrl.getSplitterRange(scope.splitter));
+                    };
+
                 }
             };
         }]);

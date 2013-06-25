@@ -3,6 +3,8 @@
     angular.module('flexyLayout.mediator', ['flexyLayout.block', 'flexyLayout.directives']).
         controller('mediatorCtrl', ['$scope', '$element', 'Block', function (scope, element, Block) {
 
+            scope.movingSplitter = null;
+
             var blocks = [];
             var splitter = null;
             var splitterCount = 0;
@@ -26,7 +28,7 @@
 
                             if (splitter !== null) {
                                 blocks.push(splitter);
-                                var composite=Block.getNewComposite(blocks);
+                                var composite = Block.getNewComposite(blocks);
                                 composite.moveLength(-5);
                                 splitterCount++;
                                 splitter = null;
@@ -38,68 +40,6 @@
                     }
                 }
             };
-
-
-            //not the best but Splitter function is not exposed to global scope
-            var isSplitter = function (block) {
-                return (typeof block === 'object') && (block.constructor.name === 'Splitter');
-            };
-
-            this.moveBlockSplitter = function (splitter, length) {
-
-                //that sucks, too many variables !!!
-                var
-                    splitterIndex = blocks.indexOf(splitter),
-                    allBeforeBlockList = blocks.slice(0, splitterIndex),
-                    allAfterBlockList = blocks.slice(splitterIndex + 1, blocks.length),
-                    beforeArg = [],
-                    afterArg = [],
-                    beforeComposite,
-                    afterComposite,
-                    testedBlock,
-                    availableLength;
-
-                if (!isSplitter(splitter) || splitterIndex === -1) {
-                    return;
-                }
-
-                //set before composite
-                while (testedBlock = allBeforeBlockList.pop()) {
-                    if (isSplitter(testedBlock)) {
-                        break;
-                    }
-                    else {
-                        beforeArg.push(testedBlock);
-                    }
-                }
-
-                //set after composite
-                while (testedBlock = allAfterBlockList.shift()) {
-                    if (isSplitter(testedBlock)) {
-                        break;
-                    } else {
-                        afterArg.push(testedBlock);
-                    }
-                }
-
-                beforeComposite = Block.getNewComposite(beforeArg);
-                afterComposite = Block.getNewComposite(afterArg);
-
-                if (!beforeComposite.canMoveLength(length) || !afterComposite.canMoveLength(length)) {
-                    return;
-                }
-
-                if (length < 0) {
-                    availableLength = (-1) * beforeComposite.moveLength(length);
-                    afterComposite.moveLength(availableLength);
-                } else {
-                    availableLength = (-1) * afterComposite.moveLength(-length);
-                    beforeComposite.moveLength(-availableLength);
-                }
-
-
-            };
-
 
             this.moveBlockLength = function (block, length) {
 
@@ -116,7 +56,7 @@
                 composingBlocks = (blocks.slice(0, blockIndex)).concat(blocks.slice(blockIndex + 1, blocks.length));
                 composite = Block.getNewComposite(composingBlocks);
 
-                if(!composite.canMoveLength(-length)){
+                if (!composite.canMoveLength(-length)) {
                     return;
                 }
 
@@ -130,6 +70,75 @@
 
                 //free memory?
                 //composite.clean();
-            }
+            };
+
+            //not the best but Splitter function is not exposed to global scope
+            var isSplitter = function (block) {
+                return (typeof block === 'object') && (block.constructor.name === 'Splitter');
+            };
+
+            var fromSplitterToSplitter = function (splitter, before) {
+
+                var
+                    splitterIndex = blocks.indexOf(splitter),
+                    blockGroup = before === true ? blocks.slice(0, splitterIndex) : blocks.slice(splitterIndex + 1, blocks.length),
+                    fn = before === true ? Array.prototype.pop : Array.prototype.shift,
+                    composite = [],
+                    testedBlock;
+
+                while (testedBlock = fn.apply(blockGroup)) {
+                    if (isSplitter(testedBlock)) {
+                        break;
+                    } else {
+                        composite.push(testedBlock);
+                    }
+                }
+                return Block.getNewComposite(composite);
+            };
+
+            this.moveBlockSplitter = function (splitter, length) {
+
+                //that sucks, too many variables !!!
+                var
+                    splitterIndex = blocks.indexOf(splitter),
+                    beforeComposite,
+                    afterComposite,
+                    availableLength;
+
+                if (!isSplitter(splitter) || splitterIndex === -1) {
+                    return;
+                }
+
+
+                beforeComposite = Block.getNewComposite(fromSplitterToSplitter(splitter, true));
+                afterComposite = Block.getNewComposite(fromSplitterToSplitter(splitter, false));
+
+                if (!beforeComposite.canMoveLength(length) || !afterComposite.canMoveLength(length)) {
+                    return;
+                }
+
+                if (length < 0) {
+                    availableLength = (-1) * beforeComposite.moveLength(length);
+                    afterComposite.moveLength(availableLength);
+                } else {
+                    availableLength = (-1) * afterComposite.moveLength(-length);
+                    beforeComposite.moveLength(-availableLength);
+                }
+
+
+            };
+
+            this.getSplitterRange = function (splitter) {
+
+                var
+                    beforeSplitter = fromSplitterToSplitter(splitter, true),
+                    afterSplitter = fromSplitterToSplitter(splitter, false);
+
+                return{
+                    before: beforeSplitter.getAvailableLength(),
+                    after: afterSplitter.getAvailableLength()
+                };
+            };
+
         }]);
 })(angular);

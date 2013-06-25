@@ -8,7 +8,7 @@
 
                 if (angular.isArray(composingBlocks)) {
                     for (var i = 0, l = composingBlocks.length; i < l; i++) {
-                        if (composingBlocks[i].moveLength && composingBlocks[i].canMoveLength) {
+                        if (composingBlocks[i].moveLength && composingBlocks[i].canMoveLength && composingBlocks[i].getAvailableLength) {
                             this.blocks.push(composingBlocks[i]);
                         }
                     }
@@ -50,6 +50,15 @@
                 return false;
             };
 
+            CompositeBlock.prototype.getAvailableLength = function () {
+                var length = 0;
+                for (var i = 0, l = this.blocks.length; i < l; i++) {
+                    length += this.blocks[i].getAvailableLength();
+                }
+
+                return length;
+            };
+
             CompositeBlock.prototype.clean = function () {
                 this.blocks = [];
             };
@@ -77,6 +86,9 @@
                 return !(this.isLocked === true || (length < 0 && (this.lengthValue - this.minLength) === 0));
             };
 
+            Block.prototype.getAvailableLength = function () {
+                return this.isLocked === true ? 0 : this.lengthValue - this.minLength;
+            };
 
             function Splitter() {
                 this.lengthValue = 5;
@@ -87,6 +99,10 @@
             };
 
             Splitter.prototype.moveLength = function () {
+                return 0;
+            };
+
+            Splitter.prototype.getAvailableLength = function () {
                 return 0;
             };
 
