@@ -58,15 +58,27 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                 replace: true,
                 scope: {},
                 template: '<div class="block splitter">' +
-                    '<div class="ghost" ng-click="getRange()"></div>' +
+                    '<div class="ghost"></div>' +
                     '</div>',
                 link: function (scope, element, attrs, ctrl) {
                     scope.splitter = Block.getNewSplitter();
+
+                    var ghost = element.children()[0];
+                    var mouseDownHandler = function (event) {
+                        this.initialPosition.x = event.clientX;
+                        this.availableLength = ctrl.getSplitterRange(this);
+                        ctrl.movingSplitter = this;
+                    };
+
                     ctrl.addBlock(scope.splitter);
 
-                    scope.getRange = function () {
-                        console.log(ctrl.getSplitterRange(scope.splitter));
-                    };
+                    element.bind('mousedown', angular.bind(scope.splitter, mouseDownHandler));
+
+                    scope.$watch('splitter.ghostPosition.x', function (newValue, oldValue) {
+                        if (newValue !== oldValue) {
+                            ghost.style.left = newValue+'px';
+                        }
+                    });
 
                 }
             };

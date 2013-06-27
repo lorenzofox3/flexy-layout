@@ -3,14 +3,47 @@
     angular.module('flexyLayout.mediator', ['flexyLayout.block', 'flexyLayout.directives']).
         controller('mediatorCtrl', ['$scope', '$element', 'Block', function (scope, element, Block) {
 
-            scope.movingSplitter = null;
 
             var blocks = [];
             var splitter = null;
             var splitterCount = 0;
+            var self = this;
+
+            this.movingSplitter = null;
+
+            element.bind('mouseup', function (event) {
+                scope.$apply(angular.bind(self, mouseUpHandler, event));
+            });
+
+            //todo should do some throttle before cally apply
+            element.bind('mousemove', function (event) {
+                scope.$apply(angular.bind(self, mouseMoveHandler, event));
+            });
+
+            var mouseMoveHandler = function (event) {
+                var length = 0;
+                if (this.movingSplitter !== null) {
+                    length = event.clientX - this.movingSplitter.initialPosition.x;
+                    if (length < 0) {
+                        this.movingSplitter.ghostPosition.x = (-1) * Math.min(Math.abs(length), this.movingSplitter.availableLength.before);
+                    } else {
+                        this.movingSplitter.ghostPosition.x = Math.min(length, this.movingSplitter.availableLength.after);
+                    }
+                }
+            };
+
+            var mouseUpHandler = function (event) {
+                var length = 0;
+                if (this.movingSplitter !== null) {
+                    length = event.clientX - this.movingSplitter.initialPosition.x;
+                    this.moveSplitterLength(this.movingSplitter, length);
+                    this.movingSplitter.ghostPosition.x = 0;
+                    this.movingSplitter = null;
+                }
+            };
+
 
             this.addBlock = function (block) {
-
 
                 //must implement the structural interface
                 if (block.moveLength && block.canMoveLength) {
@@ -96,7 +129,7 @@
                 return Block.getNewComposite(composite);
             };
 
-            this.moveBlockSplitter = function (splitter, length) {
+            this.moveSplitterLength = function (splitter, length) {
 
                 //that sucks, too many variables !!!
                 var
@@ -122,7 +155,7 @@
                     afterComposite.moveLength(availableLength);
                 } else {
                     availableLength = (-1) * afterComposite.moveLength(-length);
-                    beforeComposite.moveLength(-availableLength);
+                    beforeComposite.moveLength(availableLength);
                 }
 
 

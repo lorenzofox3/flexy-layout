@@ -92,6 +92,10 @@
 
             function Splitter() {
                 this.lengthValue = 5;
+                this.initialPosition = { x: 0, y: 0};
+                this.availableLength = {before: 0, after: 0};
+                this.ghostPosition = { x: 0, y: 0};
+
             }
 
             Splitter.prototype.canMoveLength = function (length) {

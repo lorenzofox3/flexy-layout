@@ -27,8 +27,24 @@
 .block.splitter{
     width: 5px;
     background: black;
+    position: relative;
+    overflow: visible;
 }
 
+.ghost{
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+
+    z-index: 99;
+    cursor: col-resize;
+    background: yellow;
+}
+
+.ghost:hover{
+    background: orange;
+}
 
 .block-content{
     display: inline-block;
@@ -48,16 +64,10 @@
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     overflow: hidden;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
-
-.ghost{
-    display: inline-block;
-    height: 100%;
-    width: 100%;
-    cursor: col-resize;
-}
-
-.ghost:hover{
-    background: orange;
-}
-
