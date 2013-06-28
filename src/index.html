@@ -9,12 +9,26 @@
     <link type="text/css" rel="stylesheet" href="flexyLayout.css"/>
 </head>
 <body ng-controller="mainCtrl">
-<p>yo {{greetings}}</p>
-<flexy-layout>
+<flexy-layout orientation="horizontal">
     <block-container>
-        <div>
-            <p>from controller : {{greetings}}</p>
-        </div>
+        <flexy-layout orientation="vertical">
+            <block-container>
+                <div>
+                    <!--<collapse index="0"></collapse>-->
+                    <p>from controller : {{greetings}}</p>
+                </div>
+            </block-container>
+            <block-container>
+                <div>
+                    <p>from controller : {{greetings}}</p>
+                </div>
+            </block-container>
+            <block-container>
+                <div>
+                    <p>from controller : {{greetings}}</p>
+                </div>
+            </block-container>
+        </flexy-layout>
     </block-container>
     <block-splitter></block-splitter>
     <block-container>
@@ -24,22 +38,7 @@
     </block-container>
     <block-container>
         <div>
-            <p>from controller : {{greetings}}</p>
-        </div>
-    </block-container>
-    <block-container>
-        <div>
-            <p>from controller : {{greetings}}</p>
-        </div>
-    </block-container>
-    <block-splitter></block-splitter>
-    <block-container>
-        <div>
-            <p>from controller : {{greetings}}</p>
-        </div>
-    </block-container>
-    <block-container>
-        <div>
+            <collapse index="3"></collapse>
             <p>from controller : {{greetings}}</p>
         </div>
     </block-container>

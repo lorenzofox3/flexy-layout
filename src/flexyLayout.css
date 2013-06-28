@@ -1,73 +1,89 @@
-.flexy-layout{
-    position: relative;
-
+.flexy-layout {
     display: inline-block;
     width: 100%;
-    height: 300px;
-    background-color: lightcyan;
+    height: 100%;
     box-sizing: border-box;
     overflow: hidden;
 }
 
-.flexy-layout > .block{
+
+.flexy-layout > .block {
     display: inline-block;
-    height: 100%;
     float: left;
     overflow: hidden;
 
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    transform:translateZ(0);
-    -moz-transform:translateZ(0);
-    transition: width 0.8s ease-in-out ;
-    -moz-transition: width 0.8s ease-in-out ;
-    -webkit-transition: width 0.8s ease-in-out;
+    /*box-sizing: border-box;*/
+    transition: all 0.8s ease-in-out;
 }
 
-.block.splitter{
-    width: 5px;
-    background: black;
+.flexy-layout.column > .block {
+    height: 100%;
+}
+
+.flexy-layout.row > .block {
+    width: 100%;
+}
+
+.block.splitter {
     position: relative;
     overflow: visible;
+
+    /*cursor: col-resize;*/
+    /*background: black;*/
 }
 
-.ghost{
+.flexy-layout.column > .splitter{
+    width: 5px;
+}
+
+.flexy-layout.row > .splitter{
+    height: 5px;
+}
+
+.ghost {
+    float: left;
     position: relative;
     display: inline-block;
     height: 100%;
     width: 100%;
-
     z-index: 99;
     cursor: col-resize;
-    background: yellow;
+
+    /*background: yellow;*/
 }
 
-.ghost:hover{
+.ghost:hover {
     background: orange;
 }
 
-.block-content{
+.block-content {
     display: inline-block;
     padding: 5px;
     width: 100%;
-    height: 80%;
+    height: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
 
 }
 
-.block-content div{
+.block-content div {
     display: inline-block;
     width: 100%;
     height: 100%;
     background: greenyellow;
+
     box-sizing: border-box;
-    -moz-box-sizing: border-box;
     overflow: hidden;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+}
+
+.block-content  .block-content{
+    background: white;
+}
+
+body{
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }

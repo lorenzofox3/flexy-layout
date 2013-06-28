@@ -1,24 +1,49 @@
 var app = angular.module('app', ['flexyLayout.mediator']);
 app.controller('mainCtrl', ['$scope', function (scope) {
-    scope.greetings = "hello";
-}]);
+        scope.greetings = "hello";
+    }]).directive('collapse', function () {
+        return {
+            require: '^flexyLayout',
+            replace: true,
+            scope: {},
+            template: '<button ng-click="toggle()">test</button>',
+            restrict: 'E',
+            link: function (scope, element, attr, ctrl) {
 
+                var index = attr.index,
+                    minWidth = attr.minWidth || 20,
+                    maxWidth = attr.maxWidth || 200;
+
+                scope.isCollapsed = false;
+                scope.toggle = function () {
+                    ctrl.toggleLockBlock(index, false);
+                    scope.isCollapsed = scope.isCollapsed !== true;
+                };
+
+                scope.$watch('isCollapsed', function (newValue, oldValue) {
+                    if (newValue!==oldValue) {
+                        var newLength = newValue === true ? minWidth - element.parent()[0].offsetWidth : maxWidth - element.parent()[0].offsetWidth;
+                        ctrl.moveBlockLength(index, newLength);
+                        ctrl.toggleLockBlock(index, true);
+                    }
+                });
+            }
+        };
+    });
 
 (function (angular) {
     "use strict";
     angular.module('flexyLayout.directives', [])
-        .directive('flexyLayout', ['Block', function (Block) {
+        .directive('flexyLayout', function () {
             return {
                 restrict: 'E',
+                scope: {},
                 template: '<div class="flexy-layout" ng-transclude></div>',
                 replace: true,
                 transclude: true,
-                controller: 'mediatorCtrl',
-                link: function (scope, element, attr) {
-
-                }
+                controller: 'mediatorCtrl'
             };
-        }])
+        })
         .directive('blockContainer', ['Block', function (Block) {
             return{
                 restrict: 'E',
@@ -29,25 +54,14 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                 template: '<div class="block">' +
                     '<div class="block-content" ng-transclude>' +
                     '</div>' +
-                    '<input ng-model="value" type="number"/>' +
-                    '<input type="checkbox" ng-model="block.isLocked"/>' +
-                    '<span>{{block.lengthValue}}</span>' +
                     '</div>',
                 link: function (scope, element, attrs, ctrl) {
                     scope.block = Block.getNewBlock();
                     scope.$watch('block.lengthValue', function (newValue, oldValue) {
-                        element.css('width', newValue + 'px');
+                        element.css(ctrl.lengthProperties.lengthName, newValue + 'px');
                     });
 
                     ctrl.addBlock(scope.block);
-                    scope.value = 0;
-                    var input = angular.element(element.children()[1]);
-                    input.bind('blur', function () {
-                        scope.$apply(function () {
-                            ctrl.moveBlockLength(scope.block, scope.value);
-                            scope.value = 0;
-                        });
-                    });
                 }
             };
         }])
@@ -66,6 +80,7 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                     var ghost = element.children()[0];
                     var mouseDownHandler = function (event) {
                         this.initialPosition.x = event.clientX;
+                        this.initialPosition.y = event.clientY;
                         this.availableLength = ctrl.getSplitterRange(this);
                         ctrl.movingSplitter = this;
                     };
@@ -74,9 +89,9 @@ app.controller('mainCtrl', ['$scope', function (scope) {
 
                     element.bind('mousedown', angular.bind(scope.splitter, mouseDownHandler));
 
-                    scope.$watch('splitter.ghostPosition.x', function (newValue, oldValue) {
+                    scope.$watch('splitter.ghostPosition.' + ctrl.lengthProperties.position, function (newValue, oldValue) {
                         if (newValue !== oldValue) {
-                            ghost.style.left = newValue+'px';
+                            ghost.style[ctrl.lengthProperties.positionName] = newValue + 'px';
                         }
                     });
 

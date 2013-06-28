@@ -3,11 +3,33 @@
     angular.module('flexyLayout.block', [])
         .provider('Block', function () {
 
+
+            var defaultConfiguration = {
+
+            };
+
+            this.setDefaultConfiguration = function (configuration) {
+                defaultConfiguration = angular.extend(defaultConfiguration, configuration);
+            };
+
+
+            /**
+             * A composite block made of different types of blocks that must implement the structural interface
+             *
+             * moveLength->change the lengthValue according to specific block rules
+             * canMoveLength->tells whether the block can change his lengthValue in the current state
+             * getAvailableLength->return the length the block can be reduced of
+             *
+             * , canMoveLength, getAvailableLength
+             * @param composingBlocks
+             * @constructor
+             */
             function CompositeBlock(composingBlocks) {
                 this.blocks = [];
 
                 if (angular.isArray(composingBlocks)) {
                     for (var i = 0, l = composingBlocks.length; i < l; i++) {
+                        //should implement structural interface
                         if (composingBlocks[i].moveLength && composingBlocks[i].canMoveLength && composingBlocks[i].getAvailableLength) {
                             this.blocks.push(composingBlocks[i]);
                         }
@@ -63,6 +85,10 @@
                 this.blocks = [];
             };
 
+            /**
+             * A Blokc which can be locked (ie its lengthValue can not change) this is the standard composing block
+             * @constructor
+             */
             function Block() {
                 this.isLocked = false;
                 this.lengthValue = 0;
@@ -90,6 +116,10 @@
                 return this.isLocked === true ? 0 : this.lengthValue - this.minLength;
             };
 
+            /**
+             * Splitter a splitter block which split a set of blocks into two separate set
+             * @constructor
+             */
             function Splitter() {
                 this.lengthValue = 5;
                 this.initialPosition = { x: 0, y: 0};
@@ -98,7 +128,7 @@
 
             }
 
-            Splitter.prototype.canMoveLength = function (length) {
+            Splitter.prototype.canMoveLength = function () {
                 return false;
             };
 

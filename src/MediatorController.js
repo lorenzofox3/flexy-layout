@@ -1,111 +1,209 @@
 (function (angular) {
     "use strict";
     angular.module('flexyLayout.mediator', ['flexyLayout.block', 'flexyLayout.directives']).
-        controller('mediatorCtrl', ['$scope', '$element', 'Block', function (scope, element, Block) {
+        controller('mediatorCtrl', ['$scope', '$element', '$attrs', 'Block', function (scope, element, attrs, Block) {
 
+            var blocks = [],
+                pendingSplitter = null,
+                splitterCount = 0,
+                self = this,
+                possibleOrientations = ['vertical', 'horizontal'],
+                orientation = possibleOrientations.indexOf(attrs.orientation) !== -1 ? attrs.orientation : 'horizontal',
+                className = orientation === 'horizontal' ? 'column' : 'row';
 
-            var blocks = [];
-            var splitter = null;
-            var splitterCount = 0;
-            var self = this;
+            element.addClass(className);
+
+            this.lengthProperties = orientation === 'horizontal' ? {lengthName: 'width', offsetName: 'offsetWidth', positionName: 'left', position: 'x', eventProperty: 'clientX'} :
+            {lengthName: 'height', offsetName: 'offsetHeight', positionName: 'top', position: 'y', eventProperty: 'clientY'};
+
+            ///// mouse event handler /////
 
             this.movingSplitter = null;
 
-            element.bind('mouseup', function (event) {
-                scope.$apply(angular.bind(self, mouseUpHandler, event));
-            });
-
-            //todo should do some throttle before cally apply
-            element.bind('mousemove', function (event) {
-                scope.$apply(angular.bind(self, mouseMoveHandler, event));
-            });
-
             var mouseMoveHandler = function (event) {
-                var length = 0;
+                var length = 0,
+                    eventProperty = this.lengthProperties.eventProperty,
+                    position = this.lengthProperties.position;
+
                 if (this.movingSplitter !== null) {
-                    length = event.clientX - this.movingSplitter.initialPosition.x;
+                    length = event[eventProperty] - this.movingSplitter.initialPosition[position];
                     if (length < 0) {
-                        this.movingSplitter.ghostPosition.x = (-1) * Math.min(Math.abs(length), this.movingSplitter.availableLength.before);
+                        this.movingSplitter.ghostPosition[position] = (-1) * Math.min(Math.abs(length), this.movingSplitter.availableLength.before);
                     } else {
-                        this.movingSplitter.ghostPosition.x = Math.min(length, this.movingSplitter.availableLength.after);
+                        this.movingSplitter.ghostPosition[position] = Math.min(length, this.movingSplitter.availableLength.after);
                     }
                 }
             };
 
             var mouseUpHandler = function (event) {
-                var length = 0;
+                var length = 0,
+                    eventProperty = this.lengthProperties.eventProperty,
+                    position = this.lengthProperties.position;
+
                 if (this.movingSplitter !== null) {
-                    length = event.clientX - this.movingSplitter.initialPosition.x;
+                    length = event[eventProperty] - this.movingSplitter.initialPosition[position];
                     this.moveSplitterLength(this.movingSplitter, length);
-                    this.movingSplitter.ghostPosition.x = 0;
+                    this.movingSplitter.ghostPosition[position] = 0;
                     this.movingSplitter = null;
                 }
             };
 
+            element.bind('mouseup', function (event) {
+                scope.$apply(angular.bind(self, mouseUpHandler, event));
+            });
+
+            //todo should do some throttle before call apply
+            element.bind('mousemove', function (event) {
+                scope.$apply(angular.bind(self, mouseMoveHandler, event));
+            });
+
+
+            /////   adding blocks   ////
 
             this.addBlock = function (block) {
 
-                //must implement the structural interface
-                if (block.moveLength && block.canMoveLength) {
+                var composite;
+                var elementLength = element[0][this.lengthProperties.offsetName];
 
-                    if (blocks.length < 1) {
-                        blocks.push(block);
-                        block.moveLength(element[0].offsetWidth);
+                if (blocks.length < 1) {
+                    blocks.push(block);
+                    block.moveLength(elementLength);
+                }
+                else {
+
+                    if (isSplitter(block)) {
+                        pendingSplitter = block;
                     }
                     else {
 
-                        if (isSplitter(block)) {
-                            splitter = block;
+                        if (pendingSplitter !== null) {
+                            blocks.push(pendingSplitter);
+                            composite = Block.getNewComposite(blocks);
+                            composite.moveLength(-pendingSplitter.lengthValue);
+                            splitterCount++;
+                            pendingSplitter = null;
                         }
-                        else {
 
-                            if (splitter !== null) {
-                                blocks.push(splitter);
-                                var composite = Block.getNewComposite(blocks);
-                                composite.moveLength(-5);
-                                splitterCount++;
-                                splitter = null;
-                            }
-
-                            blocks.push(block);
-                            this.moveBlockLength(block, ((element[0].offsetWidth ) / (blocks.length - splitterCount)) + 5 * splitterCount);
-                        }
+                        blocks.push(block);
+                        this.moveBlockLength(block, ((elementLength ) / (blocks.length - splitterCount)));
                     }
                 }
             };
 
+            ///// public api /////
+
+            /**
+             * Will move a given block length from @length
+             *
+             * @param block can be a block or an index (likely index of the block)
+             * @param length < 0 or > 0 : decrease/increase block size of abs(length) px
+             */
             this.moveBlockLength = function (block, length) {
 
                 var
-                    blockIndex = blocks.indexOf(block),
+                    blockIndex = typeof block !== 'object' ? block : blocks.indexOf(block),
                     composingBlocks,
                     composite,
-                    availableLength;
+                    availableLength,
+                    blockToMove;
 
-                if (blockIndex === -1 || length === 0 || block.canMoveLength(length) !== true) {
+
+                if (blockIndex < 0 || length === 0 || blockIndex >= blocks.length) {
                     return;
                 }
+
+                blockToMove = blocks[blockIndex];
 
                 composingBlocks = (blocks.slice(0, blockIndex)).concat(blocks.slice(blockIndex + 1, blocks.length));
                 composite = Block.getNewComposite(composingBlocks);
 
-                if (!composite.canMoveLength(-length)) {
+                if (composite.canMoveLength(-length) !== true || blockToMove.canMoveLength(length) !== true) {
                     return;
                 }
 
                 if (length < 0) {
-                    availableLength = (-1) * block.moveLength(length);
+                    availableLength = (-1) * blockToMove.moveLength(length);
                     composite.moveLength(availableLength);
                 } else {
                     availableLength = (-1) * composite.moveLength(-length);
-                    block.moveLength(availableLength);
+                    blockToMove.moveLength(availableLength);
                 }
 
                 //free memory?
                 //composite.clean();
             };
 
-            //not the best but Splitter function is not exposed to global scope
+            /**
+             * move splitter it will affect all the blocks before until the previous/next splitter or the edge of area
+             * @param splitter
+             * @param length
+             */
+                //todo mutualise with moveBlockLength
+            this.moveSplitterLength = function (splitter, length) {
+
+                var
+                    splitterIndex = blocks.indexOf(splitter),
+                    beforeComposite,
+                    afterComposite,
+                    availableLength;
+
+                if (!isSplitter(splitter) || splitterIndex === -1) {
+                    return;
+                }
+
+                beforeComposite = Block.getNewComposite(fromSplitterToSplitter(splitter, true));
+                afterComposite = Block.getNewComposite(fromSplitterToSplitter(splitter, false));
+
+                if (!beforeComposite.canMoveLength(length) || !afterComposite.canMoveLength(-length)) {
+                    return;
+                }
+
+                if (length < 0) {
+                    availableLength = (-1) * beforeComposite.moveLength(length);
+                    afterComposite.moveLength(availableLength);
+                } else {
+                    availableLength = (-1) * afterComposite.moveLength(-length);
+                    beforeComposite.moveLength(availableLength);
+                }
+
+            };
+
+            /**
+             * return an object with the available length before the splitter and after the splitter
+             * @param splitter
+             * @returns {{before: *, after: *}}
+             */
+            this.getSplitterRange = function (splitter) {
+
+                var
+                    beforeSplitter = fromSplitterToSplitter(splitter, true),
+                    afterSplitter = fromSplitterToSplitter(splitter, false);
+
+                return{
+                    before: beforeSplitter.getAvailableLength(),
+                    after: afterSplitter.getAvailableLength()
+                };
+            };
+
+            /**
+             * lock/unlock a given block
+             * @param block block or blockIndex
+             * @param lock new value for block.isLocked
+             */
+            this.toggleLockBlock = function (block,lock) {
+                var
+                    blockIndex = typeof block !== 'object' ? block : blocks.indexOf(block),
+                    blockToLock;
+
+                if (blockIndex >= 0 && blockIndex < blocks.length) {
+                    blockToLock = blocks[blockIndex];
+                    blockToLock.isLocked = lock;
+                }
+
+            };
+
+            /// utilities /////
+
             var isSplitter = function (block) {
                 return (typeof block === 'object') && (block.constructor.name === 'Splitter');
             };
@@ -128,50 +226,5 @@
                 }
                 return Block.getNewComposite(composite);
             };
-
-            this.moveSplitterLength = function (splitter, length) {
-
-                //that sucks, too many variables !!!
-                var
-                    splitterIndex = blocks.indexOf(splitter),
-                    beforeComposite,
-                    afterComposite,
-                    availableLength;
-
-                if (!isSplitter(splitter) || splitterIndex === -1) {
-                    return;
-                }
-
-
-                beforeComposite = Block.getNewComposite(fromSplitterToSplitter(splitter, true));
-                afterComposite = Block.getNewComposite(fromSplitterToSplitter(splitter, false));
-
-                if (!beforeComposite.canMoveLength(length) || !afterComposite.canMoveLength(length)) {
-                    return;
-                }
-
-                if (length < 0) {
-                    availableLength = (-1) * beforeComposite.moveLength(length);
-                    afterComposite.moveLength(availableLength);
-                } else {
-                    availableLength = (-1) * afterComposite.moveLength(-length);
-                    beforeComposite.moveLength(availableLength);
-                }
-
-
-            };
-
-            this.getSplitterRange = function (splitter) {
-
-                var
-                    beforeSplitter = fromSplitterToSplitter(splitter, true),
-                    afterSplitter = fromSplitterToSplitter(splitter, false);
-
-                return{
-                    before: beforeSplitter.getAvailableLength(),
-                    after: afterSplitter.getAvailableLength()
-                };
-            };
-
         }]);
 })(angular);
