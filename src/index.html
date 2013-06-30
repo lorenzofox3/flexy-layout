@@ -3,20 +3,27 @@
 <head>
     <title></title>
     <script src="../components/angular/angular.js"></script>
-    <script src="Block.js"></script>
-    <script src="directives.js"></script>
-    <script src="MediatorController.js"></script>
-    <link type="text/css" rel="stylesheet" href="flexyLayout.css"/>
+    <script src="./flexy-layout/Block.js"></script>
+    <script src="./flexy-layout/directives.js"></script>
+    <script src="./flexy-layout/MediatorController.js"></script>
+    <script src="app.js"></script>
+    <link type="text/css" rel="stylesheet" href="./flexy-layout/flexyLayout.css"/>
+    <link type="text/css" rel="stylesheet" href="mainStyle.css"/>
 </head>
 <body ng-controller="mainCtrl">
+<p>yo {{greetings}}</p>
 <flexy-layout orientation="horizontal">
     <block-container>
         <flexy-layout orientation="vertical">
             <block-container>
-                <div>
-                    <!--<collapse index="0"></collapse>-->
-                    <p>from controller : {{greetings}}</p>
-                </div>
+                <flexy-layout orientation="horizontal">
+                    <block-container>
+                            <collapse index="3"></collapse>
+                    </block-container>
+                    <block-container>
+                        <collapse></collapse>
+                    </block-container>
+                </flexy-layout>
             </block-container>
             <block-container>
                 <div>
