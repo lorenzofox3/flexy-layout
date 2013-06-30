@@ -65,6 +65,7 @@
                     if (pendingSplitter !== null) {
                         blocks.push(pendingSplitter);
                         splitterCount++;
+                        pendingSplitter = null;
                     }
 
                     blocks.push(block);
@@ -74,6 +75,9 @@
                 }
             };
 
+            /**
+             * to be called when flexy-layout container has been resized
+             */
             this.init = function () {
 
                 var i,
@@ -187,7 +191,8 @@
             this.getSplitterRange = function (splitter) {
 
                 var
-                    beforeSplitter = fromSplitterToSplitter(splitter, true),
+                    beforeSplitter = fromSplitterToSplitter(splitter, true);
+                var
                     afterSplitter = fromSplitterToSplitter(splitter, false);
 
                 return{
