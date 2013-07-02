@@ -1,6 +1,6 @@
 (function (angular) {
     "use strict";
-    angular.module('flexyLayout.mediator', ['flexyLayout.block', 'flexyLayout.directives']).
+    angular.module('flexyLayout.mediator', ['flexyLayout.block']).
         controller('mediatorCtrl', ['$scope', '$element', '$attrs', 'Block', function (scope, element, attrs, Block) {
 
             var blocks = [],
@@ -52,39 +52,55 @@
                 scope.$apply(angular.bind(self, mouseUpHandler, event));
             });
 
-            //todo should do some throttle before call apply
+            //todo should do some throttle before calling apply
             element.bind('mousemove', function (event) {
                 scope.$apply(angular.bind(self, mouseMoveHandler, event));
             });
-
 
             /////   adding blocks   ////
 
             this.addBlock = function (block) {
 
-                var composite;
-                var elementLength = element[0][this.lengthProperties.offsetName];
-
-                if (blocks.length < 1) {
-                    blocks.push(block);
-                    block.moveLength(elementLength);
-                }
-                else {
-
-                    if (isSplitter(block)) {
-                        pendingSplitter = block;
+                if (!isSplitter(block)) {
+                    if (pendingSplitter !== null) {
+                        blocks.push(pendingSplitter);
+                        splitterCount++;
+                        pendingSplitter = null;
                     }
-                    else {
 
-                        if (pendingSplitter !== null) {
-                            blocks.push(pendingSplitter);
-                            composite = Block.getNewComposite(blocks);
-                            composite.moveLength(-pendingSplitter.lengthValue);
-                            splitterCount++;
-                            pendingSplitter = null;
-                        }
+                    blocks.push(block);
+                    this.init();
+                } else {
+                    pendingSplitter = block;
+                }
+            };
 
-                        blocks.push(block);
+            /**
+             * to be called when flexy-layout container has been resized
+             */
+            this.init = function () {
+
+                var i,
+                    l = blocks.length,
+                    elementLength = element[0][this.lengthProperties.offsetName],
+                    block;
+
+                //reset all blocks
+                for (i = 0; i < l; i++) {
+                    block = blocks[i];
+                    block.isLocked = false;
+                    if (!isSplitter(block)) {
+                        block.moveLength(-10000);
+                    }
+                }
+
+                for (i = 0; i < l; i++) {
+                    block = blocks[i];
+
+                    if (i < 1) {
+                        block.moveLength(elementLength - 5 * splitterCount);
+                    }
+                    else if (!isSplitter(block)) {
                         this.moveBlockLength(block, ((elementLength ) / (blocks.length - splitterCount)));
                     }
                 }
@@ -129,8 +145,8 @@
                     blockToMove.moveLength(availableLength);
                 }
 
-                //free memory?
-                //composite.clean();
+                //free memory
+                composite.clean();
             };
 
             /**
@@ -166,6 +182,9 @@
                     beforeComposite.moveLength(availableLength);
                 }
 
+                afterComposite.clean();
+                beforeComposite.clean();
+
             };
 
             /**
@@ -177,12 +196,16 @@
 
                 var
                     beforeSplitter = fromSplitterToSplitter(splitter, true),
-                    afterSplitter = fromSplitterToSplitter(splitter, false);
+                    afterSplitter = fromSplitterToSplitter(splitter, false),
+                    toReturn={
+                        before:beforeSplitter.getAvailableLength(),
+                        after:afterSplitter.getAvailableLength()
+                    };
 
-                return{
-                    before: beforeSplitter.getAvailableLength(),
-                    after: afterSplitter.getAvailableLength()
-                };
+                beforeSplitter.clean();
+                afterSplitter.clean();
+
+                return toReturn;
             };
 
             /**
@@ -190,7 +213,7 @@
              * @param block block or blockIndex
              * @param lock new value for block.isLocked
              */
-            this.toggleLockBlock = function (block,lock) {
+            this.toggleLockBlock = function (block, lock) {
                 var
                     blockIndex = typeof block !== 'object' ? block : blocks.indexOf(block),
                     blockToLock;

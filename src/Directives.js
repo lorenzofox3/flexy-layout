@@ -1,49 +1,26 @@
-var app = angular.module('app', ['flexyLayout.mediator']);
-app.controller('mainCtrl', ['$scope', function (scope) {
-        scope.greetings = "hello";
-    }]).directive('collapse', function () {
-        return {
-            require: '^flexyLayout',
-            replace: true,
-            scope: {},
-            template: '<button ng-click="toggle()">test</button>',
-            restrict: 'E',
-            link: function (scope, element, attr, ctrl) {
-
-                var index = attr.index,
-                    minWidth = attr.minWidth || 20,
-                    maxWidth = attr.maxWidth || 200;
-
-                scope.isCollapsed = false;
-                scope.toggle = function () {
-                    ctrl.toggleLockBlock(index, false);
-                    scope.isCollapsed = scope.isCollapsed !== true;
-                };
-
-                scope.$watch('isCollapsed', function (newValue, oldValue) {
-                    if (newValue!==oldValue) {
-                        var newLength = newValue === true ? minWidth - element.parent()[0].offsetWidth : maxWidth - element.parent()[0].offsetWidth;
-                        ctrl.moveBlockLength(index, newLength);
-                        ctrl.toggleLockBlock(index, true);
-                    }
-                });
-            }
-        };
-    });
-
 (function (angular) {
     "use strict";
-    angular.module('flexyLayout.directives', [])
-        .directive('flexyLayout', function () {
+    angular.module('flexyLayout.directives', ['flexyLayout.mediator'])
+        .directive('flexyLayout', ['$log',function (log) {
             return {
                 restrict: 'E',
                 scope: {},
                 template: '<div class="flexy-layout" ng-transclude></div>',
                 replace: true,
                 transclude: true,
-                controller: 'mediatorCtrl'
+                controller: 'mediatorCtrl',
+                link: function (scope, element, attrs, ctrl) {
+                    scope.$watch(function () {
+                        return element[0][ctrl.lengthProperties.offsetName];
+                    }, function (newValue, oldValue) {
+                        log.log('test');
+                        if (oldValue !== newValue) {
+                            ctrl.init();
+                        }
+                    });
+                }
             };
-        })
+        }])
         .directive('blockContainer', ['Block', function (Block) {
             return{
                 restrict: 'E',
@@ -58,7 +35,7 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                 link: function (scope, element, attrs, ctrl) {
                     scope.block = Block.getNewBlock();
                     scope.$watch('block.lengthValue', function (newValue, oldValue) {
-                        element.css(ctrl.lengthProperties.lengthName, newValue + 'px');
+                        element.css(ctrl.lengthProperties.lengthName, Math.floor(newValue) + 'px');
                     });
 
                     ctrl.addBlock(scope.block);
@@ -98,9 +75,7 @@ app.controller('mainCtrl', ['$scope', function (scope) {
                 }
             };
         }]);
+
+    angular.module('flexyLayout', ['flexyLayout.directives']);
+
 })(angular);
-
-
-
-
-
