@@ -1,7 +1,7 @@
 (function (angular) {
     "use strict";
     angular.module('flexyLayout.directives', ['flexyLayout.mediator'])
-        .directive('flexyLayout', function () {
+        .directive('flexyLayout', ['$log',function (log) {
             return {
                 restrict: 'E',
                 scope: {},
@@ -13,13 +13,14 @@
                     scope.$watch(function () {
                         return element[0][ctrl.lengthProperties.offsetName];
                     }, function (newValue, oldValue) {
+                        log.log('test');
                         if (oldValue !== newValue) {
                             ctrl.init();
                         }
                     });
                 }
             };
-        })
+        }])
         .directive('blockContainer', ['Block', function (Block) {
             return{
                 restrict: 'E',

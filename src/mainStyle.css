@@ -1,42 +1,145 @@
-.block {
-
-    transition: all 0.8s;
-
-}
-
-.ghost {
-    background: orange;
-}
-
-.block-content {
-    display: inline-block;
-    padding: 5px;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    -moz-box-sizing: border-box;
-
-    background: lightskyblue;
-}
-
-.block-content div {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    background: #226699;
-
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.block-content  .block-content {
-    background: white;
-}
-
 body {
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
+    font-family: HelveticaNeue;
+    color: rgb(80, 80, 80);
 }
+
+header {
+
+}
+
+ul {
+    list-style: none;
+}
+
+a {
+    text-decoration: none;
+    white-space: nowrap;
+    color: #2f85df;
+}
+
+h1 {
+    margin: 0;
+    padding: 20px;
+    text-shadow: 0px 0px 2px orange;
+    /*color: #2f85df;*/
+}
+
+h2 {
+    /*color: #2f85df; */
+    border-bottom: 1px solid #2f85df;
+    padding-bottom: 10px;
+}
+
+strong {
+    color: orange;
+}
+
+.block {
+    transition: all 0.3s;
+}
+
+.splitter{
+    background: orange;
+}
+
+.ghost {
+    background: orange;
+    opacity: 0.5;
+}
+
+
+.steps-list {
+    padding-left: 0;
+    margin: 150px 35px 0 0;
+    border-right: 1px solid rgb(212, 212, 212);
+    overflow: hidden;
+}
+
+.steps-list > li {
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.steps-list > li:not(:last-child) {
+    border-bottom: 1px solid rgb(212, 212, 212);
+}
+
+.steps-list > li > a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.links-container {
+    position: relative;
+}
+
+.steps-list > li:hover {
+    background: #f4f5fd;
+}
+
+.handle {
+    padding-top: 178px;
+    text-align: left;
+    cursor: pointer;
+    height: 100%;
+    width: 35px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 9;
+    overflow: visible;
+}
+
+.handle span {
+    background: white;
+    border: 1px solid rgb(212, 212, 212);
+    border-left-width: 0;
+    padding: 5px;
+    z-index: 9999;
+}
+
+.handle span.collapse {
+    transform: rotate(360deg);
+    transition: all 0.4s;
+}
+
+.handle span:hover {
+    box-shadow: 0px 0px 4px 0px rgb(22, 127, 221);
+    border-color: rgb(22, 127, 221);
+    color: rgb(22, 127, 221);
+    transition: all 0.3s ease-in-out;
+}
+
+div.main {
+    display: inline-block;
+    width: 100%;
+    height: 85%;
+}
+
+.main-display {
+    padding: 20px;
+    overflow-y: auto;
+    margin: auto;
+}
+
+.example {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+}
+
+.example .block-content {
+    padding: 8px;
+}
+
+.flexy-container {
+    height: 200px;
+}
+

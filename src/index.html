@@ -2,6 +2,11 @@
 <html ng-app="app">
 <head>
     <title></title>
+    <script src="./rainbow.js"></script>
+    <script src="./rainbow-generic.js"></script>
+    <script src="./rainbow-html.js"></script>
+    <script src="./rainbow-javascript.js"></script>
+    <link  type="text/css" rel="stylesheet" href="./rainbow.css" />
     <script src="../components/angular/angular.js"></script>
     <script src="./flexy-layout/Block.js"></script>
     <script src="./flexy-layout/directives.js"></script>
@@ -11,44 +16,43 @@
     <link type="text/css" rel="stylesheet" href="mainStyle.css"/>
 </head>
 <body ng-controller="mainCtrl">
-<p>yo {{greetings}}</p>
-<flexy-layout orientation="horizontal">
-    <block-container>
-        <flexy-layout orientation="vertical">
-            <block-container>
-                <flexy-layout orientation="horizontal">
+<header>
+    <h1>I am flexy and I know it ...</h1>
+</header>
+<div class="main">
+    <flexy-layout class="main-layout">
+        <block-container class="links-container">
+                <ul class="steps-list">
+                    <li><a href="#">Getting started</a></li>
+                    <li><a href="#">Standard block</a></li>
+                    <li><a href="#">Splitter block</a></li>
+                    <li><a href="#">Orientation</a></li>
+                    <li><a href="#">Nested layout</a></li>
+                </ul>
+                <collapse class="handle" index="0"></collapse>
+        </block-container>
+        <block-container>
+            <section class="main-display">
+                <h2>Getting started</h2>
+                <p>Flexy Layout is a new module for <strong>Angular</strong> to help you to set up dynamic layout. It is made from <strong>standard blocks</strong> and <strong>splitter blocks</strong>. To get started,
+                include the module file <strong>flexy-layout.min.js</strong> into your application and add a reference to flexy-layout module in you application module</p>
+                <p>It is strongly recommended to add the <strong>css file</strong> as a minimum set of rules to make it works. It is also recommended to set the flexy layout length properties or its container length properties</p>
+                <div class="flexy-container">
+                    <flexy-layout class="example">
                     <block-container>
-                            <collapse index="3"></collapse>
-                    </block-container>
-                    <block-container>
-                        <collapse></collapse>
-                    </block-container>
-                </flexy-layout>
-            </block-container>
-            <block-container>
-                <div>
-                    <p>from controller : {{greetings}}</p>
-                </div>
-            </block-container>
-            <block-container>
-                <div>
-                    <p>from controller : {{greetings}}</p>
-                </div>
-            </block-container>
-        </flexy-layout>
-    </block-container>
-    <block-splitter></block-splitter>
-    <block-container>
-        <div>
-            <p>from controller : {{greetings}}</p>
-        </div>
-    </block-container>
-    <block-container>
-        <div>
-            <collapse index="3"></collapse>
-            <p>from controller : {{greetings}}</p>
-        </div>
-    </block-container>
-</flexy-layout>
+                            <pre ng-non-bindable=""><code data-language="html">&lt;flexy-layout>
+    &lt;block-container>content block 1&lt;/block-container>
+    &lt;block-container>content block 2&lt;/block-container>
+    &lt;block-container>content block 3&lt;/block-container>
+&lt;/flexy-layout></code></pre></block-container>
+                    <block-splitter></block-splitter>
+                    <block-container><p>Add this markup to define your standard blocks.
+                        the content of a block container is transcluded so that its scope is shared with the outside world.
+                    </p></block-container>
+                </flexy-layout></div>
+            </section>
+        </block-container>
+    </flexy-layout>
+</div>
 </body>
 </html>

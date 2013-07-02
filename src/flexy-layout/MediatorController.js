@@ -88,6 +88,7 @@
                 //reset all blocks
                 for (i = 0; i < l; i++) {
                     block = blocks[i];
+                    block.isLocked = false;
                     if (!isSplitter(block)) {
                         block.moveLength(-10000);
                     }
@@ -144,8 +145,8 @@
                     blockToMove.moveLength(availableLength);
                 }
 
-                //free memory?
-                //composite.clean();
+                //free memory
+                composite.clean();
             };
 
             /**
@@ -181,6 +182,9 @@
                     beforeComposite.moveLength(availableLength);
                 }
 
+                afterComposite.clean();
+                beforeComposite.clean();
+
             };
 
             /**
@@ -191,14 +195,17 @@
             this.getSplitterRange = function (splitter) {
 
                 var
-                    beforeSplitter = fromSplitterToSplitter(splitter, true);
-                var
-                    afterSplitter = fromSplitterToSplitter(splitter, false);
+                    beforeSplitter = fromSplitterToSplitter(splitter, true),
+                    afterSplitter = fromSplitterToSplitter(splitter, false),
+                    toReturn={
+                        before:beforeSplitter.getAvailableLength(),
+                        after:afterSplitter.getAvailableLength()
+                    };
 
-                return{
-                    before: beforeSplitter.getAvailableLength(),
-                    after: afterSplitter.getAvailableLength()
-                };
+                beforeSplitter.clean();
+                afterSplitter.clean();
+
+                return toReturn;
             };
 
             /**
