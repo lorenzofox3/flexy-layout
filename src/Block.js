@@ -109,7 +109,7 @@
             };
 
             Block.prototype.canMoveLength = function (length) {
-                return !(this.isLocked === true || (length < 0 && (this.lengthValue - this.minLength) === 0));
+                return !(this.isLocked === true || (length < 0 && (this.getAvailableLength()) === 0));
             };
 
             Block.prototype.getAvailableLength = function () {
@@ -155,6 +155,10 @@
                     },
                     getNewSplitter: function () {
                         return new Splitter();
+                    },
+
+                    isSplitter: function (block) {
+                        return block instanceof Splitter;
                     }
                 };
             }

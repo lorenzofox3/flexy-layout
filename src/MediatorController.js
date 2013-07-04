@@ -61,7 +61,7 @@
 
             this.addBlock = function (block) {
 
-                if (!isSplitter(block)) {
+                if (!Block.isSplitter(block)) {
                     if (pendingSplitter !== null) {
                         blocks.push(pendingSplitter);
                         splitterCount++;
@@ -89,7 +89,7 @@
                 for (i = 0; i < l; i++) {
                     block = blocks[i];
                     block.isLocked = false;
-                    if (!isSplitter(block)) {
+                    if (!Block.isSplitter(block)) {
                         block.moveLength(-10000);
                     }
                 }
@@ -100,7 +100,7 @@
                     if (i < 1) {
                         block.moveLength(elementLength - 5 * splitterCount);
                     }
-                    else if (!isSplitter(block)) {
+                    else if (!Block.isSplitter(block)) {
                         this.moveBlockLength(block, ((elementLength ) / (blocks.length - splitterCount)));
                     }
                 }
@@ -163,7 +163,7 @@
                     afterComposite,
                     availableLength;
 
-                if (!isSplitter(splitter) || splitterIndex === -1) {
+                if (!Block.isSplitter(splitter) || splitterIndex === -1) {
                     return;
                 }
 
@@ -225,12 +225,6 @@
 
             };
 
-            /// utilities /////
-
-            var isSplitter = function (block) {
-                return (typeof block === 'object') && (block.constructor.name === 'Splitter');
-            };
-
             var fromSplitterToSplitter = function (splitter, before) {
 
                 var
@@ -241,7 +235,7 @@
                     testedBlock;
 
                 while (testedBlock = fn.apply(blockGroup)) {
-                    if (isSplitter(testedBlock)) {
+                    if (Block.isSplitter(testedBlock)) {
                         break;
                     } else {
                         composite.push(testedBlock);
