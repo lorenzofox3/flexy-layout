@@ -82,14 +82,15 @@
             };
 
             CompositeBlock.prototype.clean = function () {
-                this.blocks = [];
+                delete this.blocks;
             };
 
             /**
              * A Blokc which can be locked (ie its lengthValue can not change) this is the standard composing block
              * @constructor
              */
-            function Block() {
+            function Block(initial) {
+                this.initialLength = initial > 0 ? initial : 0;
                 this.isLocked = false;
                 this.lengthValue = 0;
                 this.minLength = 0;
@@ -150,8 +151,8 @@
                         }
                         return new CompositeBlock(args);
                     },
-                    getNewBlock: function () {
-                        return new Block();
+                    getNewBlock: function (initialLength) {
+                        return new Block(initialLength);
                     },
                     getNewSplitter: function () {
                         return new Splitter();

@@ -1,7 +1,7 @@
 (function (angular) {
     "use strict";
     angular.module('flexyLayout.directives', ['flexyLayout.mediator'])
-        .directive('flexyLayout', ['$log',function (log) {
+        .directive('flexyLayout', ['$log', function (log) {
             return {
                 restrict: 'E',
                 scope: {},
@@ -33,7 +33,8 @@
                     '</div>' +
                     '</div>',
                 link: function (scope, element, attrs, ctrl) {
-                    scope.block = Block.getNewBlock();
+                    var initialLength = scope.$eval(attrs.init);
+                    scope.block = Block.getNewBlock(initialLength);
                     scope.$watch('block.lengthValue', function (newValue, oldValue) {
                         element.css(ctrl.lengthProperties.lengthName, Math.floor(newValue) + 'px');
                     });
