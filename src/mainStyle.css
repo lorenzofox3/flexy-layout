@@ -123,10 +123,9 @@ div.main {
     height: 85%;
 }
 
-.main-display {
+.main-display .block-content {
     padding: 20px;
     overflow-y: auto;
-    margin: auto;
 }
 
 .example {
@@ -137,9 +136,47 @@ div.main {
 
 .example .block-content {
     padding: 8px;
+    border: 1px ridge rgb(22, 127, 221);
+    overflow: hidden;
 }
 
-.flexy-container {
-    height: 200px;
+.standard-api {
+    background: rgb(200,200,200);
+    height: 100%;
+    width: 100%;
+}
+
+.flexy-container.horizontal{
+    height: 250px;
+}
+
+.flexy-container.vertical{
+    height: 500px;
+}
+
+.flexy-container.complex{
+    height: 500px;
+}
+
+
+
+.inline{
+    display: inline;
+}
+
+.block-command{
+    display: inline-block;
+    width: 100%;
+    overflow: hidden;
+    background: rgb(80,80,80);
+    text-align: center;
+    padding: 3px;
+    box-sizing: border-box;
+}
+.standard-api p{
+    padding: 5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
 }
 

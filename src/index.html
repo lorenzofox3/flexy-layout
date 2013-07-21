@@ -8,9 +8,7 @@
     <script src="./rainbow-javascript.js"></script>
     <link  type="text/css" rel="stylesheet" href="./rainbow.css" />
     <script src="../components/angular/angular.js"></script>
-    <script src="./flexy-layout/Block.js"></script>
-    <script src="./flexy-layout/directives.js"></script>
-    <script src="./flexy-layout/MediatorController.js"></script>
+    <script type="text/javascript" src="flexy-layout/flexy-layout.debug.js"></script>
     <script src="app.js"></script>
     <link type="text/css" rel="stylesheet" href="./flexy-layout/flexyLayout.css"/>
     <link type="text/css" rel="stylesheet" href="mainStyle.css"/>
@@ -21,35 +19,186 @@
 </header>
 <div class="main">
     <flexy-layout class="main-layout">
-        <block-container class="links-container">
+        <block-container class="links-container" init="200">
                 <ul class="steps-list">
-                    <li><a href="#">Getting started</a></li>
-                    <li><a href="#">Standard block</a></li>
-                    <li><a href="#">Splitter block</a></li>
-                    <li><a href="#">Orientation</a></li>
-                    <li><a href="#">Nested layout</a></li>
+                    <li><a href="#started">Getting started</a></li>
+                    <li><a href="#standard">Standard block</a></li>
+                    <li><a href="#splitter">Splitter block</a></li>
+                    <li><a href="#orientation">Orientation</a></li>
+                    <li><a href="#nested">Nested layout</a></li>
                 </ul>
                 <collapse class="handle" index="0"></collapse>
         </block-container>
-        <block-container>
-            <section class="main-display">
+        <block-container class="main-display">
+            <section id="started">
                 <h2>Getting started</h2>
                 <p>Flexy Layout is a new module for <strong>Angular</strong> to help you to set up dynamic layout. It is made from <strong>standard blocks</strong> and <strong>splitter blocks</strong>. To get started,
                 include the module file <strong>flexy-layout.min.js</strong> into your application and add a reference to flexy-layout module in you application module</p>
                 <p>It is strongly recommended to add the <strong>css file</strong> as a minimum set of rules to make it works. It is also recommended to set the flexy layout length properties or its container length properties</p>
-                <div class="flexy-container">
+                <div class="flexy-container horizontal">
                     <flexy-layout class="example">
                     <block-container>
                             <pre ng-non-bindable=""><code data-language="html">&lt;flexy-layout>
-    &lt;block-container>content block 1&lt;/block-container>
+    &lt;block-container init="300">content block 1&lt;/block-container>
     &lt;block-container>content block 2&lt;/block-container>
     &lt;block-container>content block 3&lt;/block-container>
 &lt;/flexy-layout></code></pre></block-container>
                     <block-splitter></block-splitter>
-                    <block-container><p>Add this markup to define your standard blocks.
-                        the content of a block container is transcluded so that its scope is shared with the outside world.
+                    <block-container><p>Add this markup to define your standard blocks. the content of a block container is transcluded so that its scope is shared with the outside world.
+                        You can set the attribute <strong>init</strong> to initialize the length of the block (value in px). The blcok will returns to this value every time its container size changes.
+                        Otherwise all the blocks will occupy the container element evenly
                     </p></block-container>
                 </flexy-layout></div>
+            </section>
+            <section id="standard">
+                <h2>Standard Block</h2>
+
+                    The standard block <pre class="inline" ng-non-bindable=""><code data-language="html">&lt;block-container>&lt;/block-container></code></pre> can change its length. Any change in its length will make other standards blocks to adapt their length evenly inside the flexy layout.
+                    However you can <strong>lock</strong> a standard block; this will prevent the block to perform any change in the block length even if the others blocks trigger some length changes.
+
+                <p>The module controller provides an API so you can perform operations on standard blocks. Any directive inside a flexy-layout can request a reference to the <strong>controller</strong> as usually done with angular
+                <pre ng-non-bindable=""><code data-language="javascript">app.directive('myDirective',function(){
+return {
+    require:'^flexyLayout',
+    link:function(scope,element,attrs,ctr){
+        //use ctrl to call controller API
+    }
+};})</code></pre>
+                </p>
+                <p>The different available methods are the following
+                <ul>
+                    <li><strong>moveBlockLength(block,length)</strong>: where <strong>block</strong> is either a reference to a block or the index of the block inside the flexy-lyout. <strong>Length</strong> is an integer, if its is positive,</li>
+                    the block will increase its length (px) by the value passed as argument and if it is negative it will decrease it. The module is smart enough to find out maximum amplitude so that if you specify 1000000 for example, the block will increase until it occupies the whole space and will not go further.
+                <li><strong>toggleLockBlock(block, lockState)</strong>: where <strong>block</strong> is again a reference to a block or its index within the block collection. <strong>lockState</strong> defines whether you want the block to be locked (true) or not (false)</li>
+                </ul>
+                </p>
+                <div class="flexy-container horizontal">
+                    <flexy-layout class="example">
+                        <block-container>
+                          <div class="standard-api"><div class="block-command" index="0"></div>
+                            <p>Use the command above to lock a block or change its length so you will understand the standard block behavior</p></div>
+                        </block-container>
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="1"></div>
+                            <p>change me</p></div>
+                        </block-container>
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="2"></div>
+                            <p>change me</p></div>
+                        </block-container>
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="3"></div>
+                            <p>change me</p></div>
+                        </block-container>
+                    </flexy-layout>
+                </div>
+                <p>The code for the above command directive is the following</p>
+                <pre ng-non-bindable=""><code data-language="javascript">.directive('blockCommand', function () {
+return {
+    restrict: 'C',
+    require: '^flexyLayout',
+    template: '&lt;div>&lt;input type="number" ng-model="newLength"/>&lt;input type="checkbox" ng-model="isLocked"/>&lt;/div>',
+    replace: true,
+    scope: {},
+    link: function (scope, element, attrs, ctrl) {
+        var
+                index = parseInt(attrs.index,10),
+                input=angular.element(element.children()[1]);
+
+        scope.isLocked=false;
+
+        input.bind('blur', function () {
+            scope.$apply(function () {
+                ctrl.moveBlockLength(index,scope.newLength);
+            });
+        });
+
+        scope.$watch('isLocked', function (newValue, oldValue) {
+            if (newValue !== oldValue) {
+                ctrl.toggleLockBlock(index, newValue);
+            }
+        });
+    }};
+});</code></pre>
+            </section>
+            <section id="splitter">
+                <h2>Splitter Block</h2>
+                A <strong>splitter</strong> block is a block that splits a set of blocks into two parts. You can add the following markup <pre ng-non-bindable="" class="inline"><code data-language="html">&lt;block-splitter></block-splitter></code></pre>
+                When you move a splitter block, all the blocks to the next splitter and all the blocks to the previous splitter(or the edges of the flexy layout if there is no other splitter) will behave as explained in the previous section regarding if they are locked, etc.
+
+                <p>Note that a block splitter is taken into account when you want to calculate a block index</p>
+                <div class="flexy-container horizontal">
+                    <flexy-layout class="example">
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="0"></div>
+                                <p>Drag the splitters in orange to see how the composite blocks behave</p></div>
+                        </block-container>
+                        <block-splitter></block-splitter>
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="2"></div>
+                                <p>change me</p></div>
+                        </block-container>
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="3"></div>
+                                <p>change me</p></div>
+                        </block-container>
+                        <block-splitter></block-splitter>
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="5"></div>
+                                <p>change me</p></div>
+                        </block-container>
+                    </flexy-layout>
+                </div>
+            </section>
+            <section id="orientation">
+                <h2>Orientation</h2>
+                <p>You can change the orientation of the flexy layout by setting the attribute <strong>orientation</strong> to <strong>horizontal</strong> either <strong>vertical</strong>.
+                The default value is horizontal</p>
+                <div class="flexy-container vertical">
+                    <flexy-layout class="example" orientation="vertical">
+                        <block-container>
+                            <pre ng-non-bindable=""><code data-language="html">&lt;flexy-layout orientation="vertical">
+    &lt;block-container>content block 1&lt;/block-container>
+    &lt;block-container>content block 2&lt;/block-container>
+    &lt;block-container>content block 3&lt;/block-container>
+&lt;/flexy-layout></code></pre></block-container>
+                        <block-container><p>Add this markup to define your standard blocks. the content of a block container is transcluded so that its scope is shared with the outside world.
+                            You can set the attribute <strong>init</strong> to initialize the length of the block (value in px). The blcok will returns to this value every time its container size changes.
+                            Otherwise all the blocks will occupy the container element evenly
+                        </p></block-container>
+                        <block-splitter></block-splitter>
+                        <block-container>Another block</block-container>
+                    </flexy-layout></div>
+            </section>
+            <section id="nested">
+                <h2>Nested layout</h2>
+                <p>You can of course put a flexy layout inside another. Combined with the orientation property you'll be able to build complex layout. This website is an example</p>
+                <div class="flexy-container complex">
+                    <flexy-layout class="example">
+                        <block-container>
+                            <flexy-layout orientation="vertical">
+                                <block-container>
+                                    <div class="standard-api"><div class="block-command" index="0"></div>
+                                        <p>change me</p></div>
+                                </block-container>
+                                <block-container>
+                                    <div class="standard-api"><div class="block-command" index="1"></div>
+                                        <p>change me</p></div>
+                                </block-container>
+                                <block-splitter></block-splitter>
+                                <block-container>
+                                    <div class="standard-api"><div class="block-command" index="3"></div>
+                                        <p>change me</p></div>
+                                </block-container>
+                            </flexy-layout>
+                        </block-container>
+                        <block-splitter></block-splitter>
+                        <block-container>
+                            <div class="standard-api"><div class="block-command" index="2"></div>
+                                <p>change me</p></div>
+                        </block-container>
+                    </flexy-layout>
+                </div>
             </section>
         </block-container>
     </flexy-layout>
