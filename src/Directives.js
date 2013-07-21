@@ -14,9 +14,7 @@
                         return element[0][ctrl.lengthProperties.offsetName];
                     }, function (newValue, oldValue) {
                         log.log('test');
-                        if (oldValue !== newValue) {
-                            ctrl.init();
-                        }
+                        ctrl.init();
                     });
                 }
             };

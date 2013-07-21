@@ -181,9 +181,7 @@
                         return element[0][ctrl.lengthProperties.offsetName];
                     }, function (newValue, oldValue) {
                         log.log('test');
-                        if (oldValue !== newValue) {
-                            ctrl.init();
-                        }
+                        ctrl.init();
                     });
                 }
             };
@@ -506,7 +504,3 @@
             };
         }]);
 })(angular);
-var app = angular.module('app', ['flexyLayout']);
-app.controller('mainCtrl', ['$scope', function (scope) {
-    scope.greetings = 'hello';
-}]);
