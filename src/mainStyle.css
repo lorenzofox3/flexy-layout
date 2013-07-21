@@ -40,7 +40,7 @@ strong {
 }
 
 .block {
-    transition: all 0.3s;
+    transition: all 0.5s;
 }
 
 .splitter{
@@ -172,6 +172,8 @@ div.main {
     text-align: center;
     padding: 3px;
     box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
 }
 .standard-api p{
     padding: 5px;
