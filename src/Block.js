@@ -3,16 +3,6 @@
     angular.module('flexyLayout.block', [])
         .provider('Block', function () {
 
-
-            var defaultConfiguration = {
-
-            };
-
-            this.setDefaultConfiguration = function (configuration) {
-                defaultConfiguration = angular.extend(defaultConfiguration, configuration);
-            };
-
-
             /**
              * A composite block made of different types of blocks that must implement the structural interface
              *

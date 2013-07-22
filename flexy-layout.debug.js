@@ -3,16 +3,6 @@
     angular.module('flexyLayout.block', [])
         .provider('Block', function () {
 
-
-            var defaultConfiguration = {
-
-            };
-
-            this.setDefaultConfiguration = function (configuration) {
-                defaultConfiguration = angular.extend(defaultConfiguration, configuration);
-            };
-
-
             /**
              * A composite block made of different types of blocks that must implement the structural interface
              *
@@ -168,7 +158,7 @@
 (function (angular) {
     "use strict";
     angular.module('flexyLayout.directives', ['flexyLayout.mediator'])
-        .directive('flexyLayout', ['$log', function (log) {
+        .directive('flexyLayout', function () {
             return {
                 restrict: 'E',
                 scope: {},
@@ -179,13 +169,11 @@
                 link: function (scope, element, attrs, ctrl) {
                     scope.$watch(function () {
                         return element[0][ctrl.lengthProperties.offsetName];
-                    }, function (newValue, oldValue) {
-                        log.log('test');
                         ctrl.init();
                     });
                 }
             };
-        }])
+        })
         .directive('blockContainer', ['Block', function (Block) {
             return{
                 restrict: 'E',
@@ -226,6 +214,9 @@
                         this.initialPosition.y = event.clientY;
                         this.availableLength = ctrl.getSplitterRange(this);
                         ctrl.movingSplitter = this;
+
+                        //to avoid the block content to be selected when dragging the splitter
+                        event.preventDefault();
                     };
 
                     ctrl.addBlock(scope.splitter);
@@ -247,6 +238,7 @@
 })(angular);
 (function (angular) {
     "use strict";
+    //TODO this guy is now big, split it, maybe the part for event handling should be moved somewhere else
     angular.module('flexyLayout.mediator', ['flexyLayout.block']).
         controller('mediatorCtrl', ['$scope', '$element', '$attrs', 'Block', function (scope, element, attrs, Block) {
 

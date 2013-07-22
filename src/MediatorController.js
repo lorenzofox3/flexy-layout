@@ -1,5 +1,6 @@
 (function (angular) {
     "use strict";
+    //TODO this guy is now big, split it, maybe the part for event handling should be moved somewhere else
     angular.module('flexyLayout.mediator', ['flexyLayout.block']).
         controller('mediatorCtrl', ['$scope', '$element', '$attrs', 'Block', function (scope, element, attrs, Block) {
 
