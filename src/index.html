@@ -34,7 +34,7 @@
                 <h2>Getting started</h2>
                 <p>Flexy Layout is a new module for <strong>Angular</strong> to help you to set up dynamic layout. It is made from <strong>standard blocks</strong> and <strong>splitter blocks</strong>. To get started,
                 include the module file <strong>flexy-layout.min.js</strong> into your application and add a reference to flexy-layout module in you application module</p>
-                <p>It is strongly recommended to add the <strong>css file</strong> as a minimum set of rules to make it works. It is also recommended to set the flexy layout length properties or its container length properties</p>
+                <p>It is strongly recommended to add the <strong>css file</strong> as a minimum set of rules to make it works. It is also recommended to set the container length properties. Otherwise the flexy layout directive will not know what space is available</p>
                 <div class="flexy-container horizontal">
                     <flexy-layout class="example">
                     <block-container>
@@ -65,10 +65,10 @@ return {
     }
 };})</code></pre>
                 </p>
-                <p>The different available methods are the following
+                <p>The available methods are the following
                 <ul>
-                    <li><strong>moveBlockLength(block,length)</strong>: where <strong>block</strong> is either a reference to a block or the index of the block inside the flexy-lyout. <strong>Length</strong> is an integer, if its is positive,</li>
-                    the block will increase its length (px) by the value passed as argument and if it is negative it will decrease it. The module is smart enough to find out maximum amplitude so that if you specify 1000000 for example, the block will increase until it occupies the whole space and will not go further.
+                    <li><strong>moveBlockLength(block,length)</strong>: where <strong>block</strong> is either a reference to a block or the index of the block inside the flexy-lyout. <strong>Length</strong> is an integer, if its is positive,
+                        the block will increase its length (px) by the value passed as argument and if it is negative it will decrease it. The module is smart enough to find out maximum amplitude so that if you specify 1000000 for example, the block will increase until it occupies the whole space and will not go further.</li>
                 <li><strong>toggleLockBlock(block, lockState)</strong>: where <strong>block</strong> is again a reference to a block or its index within the block collection. <strong>lockState</strong> defines whether you want the block to be locked (true) or not (false)</li>
                 </ul>
                 </p>
@@ -149,6 +149,22 @@ return {
                         </block-container>
                     </flexy-layout>
                 </div>
+                <pre ng-non-bindable=""><code data-language="html"><flexy-layout>
+    <block-container>
+        block content
+    </block-container>
+    <block-splitter></block-splitter>
+    <block-container>
+        block content
+    </block-container>
+    <block-container>
+        block content
+    </block-container>
+    <block-splitter></block-splitter>
+    <block-container>
+        block content
+    </block-container>
+</flexy-layout></code></pre>
             </section>
             <section id="orientation">
                 <h2>Orientation</h2>
@@ -172,7 +188,7 @@ return {
             </section>
             <section id="nested">
                 <h2>Nested layout</h2>
-                <p>You can of course put a flexy layout inside another. Combined with the orientation property you'll be able to build complex layout. This website is an example</p>
+                <p>You can of course put a flexy layout inside a block container. Combined with the orientation property you'll be able to build complex layout. This website is a good example</p>
                 <div class="flexy-container complex">
                     <flexy-layout class="example">
                         <block-container>
