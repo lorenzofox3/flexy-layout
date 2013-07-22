@@ -2,6 +2,8 @@
     display: inline-block;
     width: 100%;
     height: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
     box-sizing: border-box;
     overflow: hidden;
 }
@@ -11,9 +13,6 @@
     display: inline-block;
     float: left;
     overflow: hidden;
-
-    /*box-sizing: border-box;*/
-    transition: all 0.8s ease-in-out;
 }
 
 .flexy-layout.column > .block {
@@ -27,9 +26,6 @@
 .block.splitter {
     position: relative;
     overflow: visible;
-
-    /*cursor: col-resize;*/
-    /*background: black;*/
 }
 
 .flexy-layout.column > .splitter{
@@ -48,42 +44,13 @@
     width: 100%;
     z-index: 99;
     cursor: col-resize;
-
-    /*background: yellow;*/
-}
-
-.ghost:hover {
-    background: orange;
 }
 
 .block-content {
     display: inline-block;
-    padding: 5px;
     width: 100%;
     height: 100%;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
-
-}
-
-.block-content div {
-    display: inline-block;
-    width: 100%;
-    height: 100%;
-    background: greenyellow;
-
-    box-sizing: border-box;
-    overflow: hidden;
-}
-
-.block-content  .block-content{
-    background: white;
-}
-
-body{
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
+    -webkit-box-sizing: border-box;
 }
