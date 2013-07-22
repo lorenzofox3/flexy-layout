@@ -169,6 +169,7 @@
                 link: function (scope, element, attrs, ctrl) {
                     scope.$watch(function () {
                         return element[0][ctrl.lengthProperties.offsetName];
+                    }, function () {
                         ctrl.init();
                     });
                 }
