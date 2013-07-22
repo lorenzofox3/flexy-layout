@@ -44,7 +44,7 @@ app.controller('mainCtrl', ['$scope', function (scope) {
 
                 scope.isLocked=false;
 
-                var input=angular.element(element.children()[1]);
+                var input=angular.element(element.children()[0]);
                 input.bind('blur', function () {
                     scope.$apply(function () {
                         ctrl.moveBlockLength(index,scope.newLength);
