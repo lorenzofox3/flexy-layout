@@ -3,29 +3,30 @@
 <head>
     <title></title>
     <script src="../components/angular/angular.js"></script>
-    <script src="Block.js"></script>
-    <script src="directives.js"></script>
-    <script src="MediatorController.js"></script>
-    <link type="text/css" rel="stylesheet" href="flexyLayout.css"/>
+    <script src="../src/Block.js"></script>
+    <script src="../src/Directives.js"></script>
+    <script src="../src/MediatorController.js"></script>
+    <script src="main.js"></script>
+    <link type="text/css" rel="stylesheet" href="mainStyle.css"/>
+    <link type="text/css" rel="stylesheet" href="../src/flexyLayout.css"/>
 </head>
-<body ng-controller="mainCtrl">
+<body>
 <flexy-layout orientation="horizontal">
     <block-container>
         <flexy-layout orientation="vertical">
             <block-container>
                 <div>
-                    <!--<collapse index="0"></collapse>-->
-                    <p>from controller : {{greetings}}</p>
+                    <p>inside the block</p>
                 </div>
             </block-container>
             <block-container>
                 <div>
-                    <p>from controller : {{greetings}}</p>
+                    <p>inside the block</p>
                 </div>
             </block-container>
             <block-container>
                 <div>
-                    <p>from controller : {{greetings}}</p>
+                    <p>inside the block</p>
                 </div>
             </block-container>
         </flexy-layout>
@@ -33,13 +34,12 @@
     <block-splitter></block-splitter>
     <block-container>
         <div>
-            <p>from controller : {{greetings}}</p>
+            <p>inside the block</p>
         </div>
     </block-container>
     <block-container>
         <div>
-            <collapse index="3"></collapse>
-            <p>from controller : {{greetings}}</p>
+            <p>inside the block</p>
         </div>
     </block-container>
 </flexy-layout>
