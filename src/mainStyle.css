@@ -8,9 +8,6 @@ body {
     color: rgb(80, 80, 80);
 }
 
-header {
-
-}
 
 ul {
     list-style: none;
@@ -43,7 +40,7 @@ strong {
     transition: all 0.2s;
 }
 
-.splitter{
+.splitter {
     background: orange;
 }
 
@@ -51,7 +48,6 @@ strong {
     background: orange;
     opacity: 0.5;
 }
-
 
 .steps-list {
     padding-left: 0;
@@ -141,44 +137,50 @@ div.main {
 }
 
 .standard-api {
-    background: rgb(200,200,200);
+    background: rgb(200, 200, 200);
     height: 100%;
     width: 100%;
 }
 
-.flexy-container.horizontal{
+.flexy-container.horizontal {
     height: 250px;
 }
 
-.flexy-container.vertical{
+.flexy-container.vertical {
     height: 500px;
 }
 
-.flexy-container.complex{
+.flexy-container.complex {
     height: 500px;
 }
 
-
-
-.inline{
+.inline {
     display: inline;
 }
 
-.block-command{
+.block-command {
     display: inline-block;
     width: 100%;
     overflow: hidden;
-    background: rgb(80,80,80);
+    background: rgb(80, 80, 80);
     text-align: center;
     padding: 3px;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
-.standard-api p{
+
+.standard-api p {
     padding: 5px;
     overflow: hidden;
     text-overflow: ellipsis;
     margin: 0;
+}
+
+.fork-me {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 9999;
 }
 
