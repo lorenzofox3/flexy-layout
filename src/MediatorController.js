@@ -10,7 +10,7 @@
                 self = this,
                 possibleOrientations = ['vertical', 'horizontal'],
                 orientation = possibleOrientations.indexOf(attrs.orientation) !== -1 ? attrs.orientation : 'horizontal',
-                className = orientation === 'horizontal' ? 'column' : 'row';
+                className = orientation === 'horizontal' ? 'flexy-layout-column' : 'flexy-layout-row';
 
             element.addClass(className);
 

@@ -1,6 +1,6 @@
 {
   "name": "flexy-layout",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "dynamic layout for angular",
   "main": "web-server.js",
   "scripts": {

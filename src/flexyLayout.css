@@ -15,11 +15,11 @@
     overflow: hidden;
 }
 
-.flexy-layout.column > .block {
+.flexy-layout.flexy-layout-column > .block {
     height: 100%;
 }
 
-.flexy-layout.row > .block {
+.flexy-layout.flexy-layout-row > .block {
     width: 100%;
 }
 
@@ -28,11 +28,11 @@
     overflow: visible;
 }
 
-.flexy-layout.column > .splitter{
+.flexy-layout.flexy-layout-column > .splitter{
     width: 5px;
 }
 
-.flexy-layout.row > .splitter{
+.flexy-layout.flexy-layout-row > .splitter{
     height: 5px;
 }
 
