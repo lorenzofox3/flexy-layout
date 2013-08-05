@@ -43,7 +43,15 @@
     height: 100%;
     width: 100%;
     z-index: 99;
+}
+
+.flexy-layout.flexy-layout-column > .splitter > .ghost{
     cursor: col-resize;
+}
+
+
+.flexy-layout.flexy-layout-row > .splitter > .ghost{
+    cursor: row-resize;
 }
 
 .block-content {
