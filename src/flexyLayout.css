@@ -36,6 +36,14 @@
     height: 5px;
 }
 
+.flexy-layout.flexy-layout-column > .splitter > .ghost{
+    cursor: col-resize;
+}
+
+.flexy-layout.flexy-layout-row > .splitter > .ghost{
+    cursor: row-resize;
+}
+
 .ghost {
     float: left;
     position: relative;
@@ -43,7 +51,6 @@
     height: 100%;
     width: 100%;
     z-index: 99;
-    cursor: col-resize;
 }
 
 .block-content {
