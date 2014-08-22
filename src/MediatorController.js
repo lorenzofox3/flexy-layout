@@ -76,6 +76,13 @@
                 }
             };
 
+            this.removeBlock = function (block) {
+                var idx = blocks.indexOf(block);
+
+                blocks.splice(idx, 1);
+                this.init();
+            };
+
             /**
              * to be called when flexy-layout container has been resized
              */

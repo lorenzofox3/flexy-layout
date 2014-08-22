@@ -36,6 +36,10 @@
                         element.css(ctrl.lengthProperties.lengthName, Math.floor(newValue) + 'px');
                     });
 
+                    scope.$on('$destroy', function() {
+                        ctrl.removeBlock(scope.block);
+                    });
+
                     ctrl.addBlock(scope.block);
                 }
             };
