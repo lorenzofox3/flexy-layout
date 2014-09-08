@@ -76,10 +76,14 @@
                 }
             };
 
-            this.removeBlock = function (block) {
+            this.removeBlock = function (block) {                
                 var idx = blocks.indexOf(block);
-
                 blocks.splice(idx, 1);
+                
+                if(Block.isSplitter(block)) {
+                    splitterCount--;
+                }
+                
                 this.init();
             };
 

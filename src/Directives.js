@@ -77,6 +77,10 @@
                         }
                     });
 
+                    scope.$on('$destroy', function() {
+                        ctrl.removeBlock(scope.splitter);
+                    });
+
                 }
             };
         }]);
