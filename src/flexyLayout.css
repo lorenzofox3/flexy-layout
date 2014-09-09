@@ -29,11 +29,11 @@
 }
 
 .flexy-layout.flexy-layout-column > .splitter{
-    width: 5px;
+    width: 2px;
 }
 
 .flexy-layout.flexy-layout-row > .splitter{
-    height: 5px;
+    height: 2px;
 }
 
 .flexy-layout.flexy-layout-column > .splitter > .ghost{
