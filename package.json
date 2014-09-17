@@ -1,22 +1,23 @@
 {
   "name": "flexy-layout",
-  "version": "0.1.1",
+  "version": "0.1.9",
   "description": "dynamic layout for angular",
-  "main": "web-server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "homepage": "https://github.com/schartier/flexy-layout",
+  "main": [
+      "src/flexyLayout.css",
+      "flexy-layout.min.js"
+  ],
+  "author": {
+    "name": "Vitaliy Potapov",
+    "email": "noginsk@rambler.ru"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/lorenzofox3/flexy-layout"
+    "url": "https://github.com/schartier/flexy-layout"
   },
-  "keywords": [
-    "angular",
-    "layout",
-    "flexible"
-  ],
-  "author": "laurent renard",
-  "license": "MIT",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-contrib-concat": "~0.3.0",
