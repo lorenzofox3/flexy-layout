@@ -10,11 +10,9 @@
                 transclude: true,
                 controller: 'mediatorCtrl',
                 link: function (scope, element, attrs, ctrl) {
-                    scope.$watch(function () {
-                        return element[0][ctrl.lengthProperties.offsetName];
-                    }, function () {
-                        ctrl.init();
-                    });
+		            var elHeight = element[0][ctrl.lengthProperties.offsetName];
+
+		            scope.$watch(elHeight, function() { ctrl.init(); });
                 }
             };
         })
