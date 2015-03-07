@@ -40,18 +40,33 @@
                 }
             };
         }])
-        .directive('blockSplitter', ['Block', function (Block) {
+        .directive('blockSplitter', ['Block', '$log', function (Block, $log) {
             return{
                 restrict: 'E',
                 require: '^flexyLayout',
                 replace: true,
-                scope: {},
+                scope: {
+                    onSplitterStop: '=',
+                    size: '='
+                },
                 template: '<div class="block splitter">' +
                     '<div class="ghost"></div>' +
                     '</div>',
                 link: function (scope, element, attrs, ctrl) {
                     scope.splitter = Block.getNewSplitter();
-
+                    // Tell controller about this callback.
+                    ctrl.onSplitterStop = scope.onSplitterStop;
+                    if (scope.size) {
+                        // Tell controller about our size, it needs it to calculate
+                        // the sizes of all blocks.
+                        ctrl.splitterSize = scope.size;
+                        if (ctrl.orientation == 'horizontal') {
+                            element.css('width', scope.size + 'px');
+                        }
+                        else {
+                            element.css('height', scope.size + 'px');
+                        }
+                    }
                     var ghost = element.children()[0];
                     var mouseDownHandler = function (event) {
                         this.initialPosition.x = event.clientX;
