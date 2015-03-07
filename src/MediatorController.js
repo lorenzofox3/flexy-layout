@@ -2,7 +2,7 @@
     "use strict";
     //TODO this guy is now big, split it, maybe the part for event handling should be moved somewhere else
     angular.module('flexyLayout.mediator', ['flexyLayout.block']).
-        controller('mediatorCtrl', ['$scope', '$element', '$attrs', 'Block', function (scope, element, attrs, Block) {
+        controller('mediatorCtrl', ['$scope', '$element', '$attrs', 'Block', '$log', function (scope, element, attrs, Block, $log) {
 
             var blocks = [],
                 pendingSplitter = null,
@@ -14,8 +14,16 @@
 
             element.addClass(className);
 
+            this.orientation = orientation;
             this.lengthProperties = orientation === 'horizontal' ? {lengthName: 'width', offsetName: 'offsetWidth', positionName: 'left', position: 'x', eventProperty: 'clientX'} :
             {lengthName: 'height', offsetName: 'offsetHeight', positionName: 'top', position: 'y', eventProperty: 'clientY'};
+
+
+           /**
+            * Set by blockSplitter directive
+            */
+           this.onSplitterStop = null;
+           this.splitterSize = 5;
 
             ///// mouse event handler /////
 
@@ -45,6 +53,10 @@
                     length = event[eventProperty] - this.movingSplitter.initialPosition[position];
                     this.moveSplitterLength(this.movingSplitter, length);
                     this.movingSplitter.ghostPosition[position] = 0;
+
+                    if (this.onSplitterStop) {
+                        this.onSplitterStop(this.movingSplitter.ghostPosition, length);
+                    }
                     this.movingSplitter = null;
                 }
             };
@@ -98,7 +110,7 @@
                     }
                 }
                 //buffer block takes all available space
-                bufferBlock.moveLength(elementLength - splitterCount * 5);
+                bufferBlock.moveLength(elementLength - splitterCount * this.splitterSize);
 
                 for (i = 0; i < l; i++) {
                     block = blocks[i];
@@ -197,7 +209,6 @@
 
                 afterComposite.clean();
                 beforeComposite.clean();
-
             };
 
             /**
